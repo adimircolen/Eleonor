@@ -28,6 +28,7 @@ client.on("interactionCreate", async interaction => {
 
     // Jogadores marcáveis com @
     const jogadores = [];
+    const mencoes = []; // Array para armazenar as menções
     for (let i = 1; i <= 6; i++) {
       const jogador = interaction.options.getUser(`jogador${i}`);
       const pj = interaction.options.getString(`pj${i}`);
@@ -36,6 +37,11 @@ client.on("interactionCreate", async interaction => {
         jogadores.push(
           `**Jogador ${i}:** ${jogador ? jogador : "—"}\n**Personagem:** ${pj ? pj : "—"}`
         );
+        
+        // Adiciona a menção se o jogador foi marcado
+        if (jogador) {
+          mencoes.push(`<@${jogador.id}>`);
+        }
       }
     }
 
@@ -62,26 +68,49 @@ client.on("interactionCreate", async interaction => {
       embed.addFields({ name: "📝 Observação", value: obs });
     }
 
-    await interaction.reply({ embeds: [embed] });
+    // Envia com as menções no content para notificar os jogadores
+    const contentMencoes = mencoes.length > 0 
+      ? `📢 Jogadores envolvidos: ${mencoes.join(" ")}` 
+      : null;
+
+    await interaction.reply({ 
+      content: contentMencoes,
+      embeds: [embed] 
+    });
   }
 
   // =========================
-  //  /RELATORIO (mantido igual)
+  //  /RELATORIO
   // =========================
   if (interaction.commandName === "relatorio") {
+    const mestre = interaction.options.getUser("mestre");
+    const escritor = interaction.options.getUser("escritor");
+    
     const embed = new EmbedBuilder()
       .setTitle(`📘 Relatório — ${interaction.options.getString("missao")}`)
       .setColor("Blue")
       .setDescription(interaction.options.getString("relatorio"))
       .addFields(
-        { name: "🎲 Mestre", value: interaction.options.getString("mestre") },
-        { name: "✍ Escritor", value: interaction.options.getString("escritor") }
+        { name: "🎲 Mestre", value: `${mestre}` },
+        { name: "✍ Escritor", value: `${escritor}` }
       );
 
     const img = interaction.options.getString("imagem");
     if (img) embed.setImage(img);
 
-    await interaction.reply({ embeds: [embed] });
+    // Cria as menções para notificação
+    const mencoes = [];
+    if (mestre) mencoes.push(`<@${mestre.id}>`);
+    if (escritor) mencoes.push(`<@${escritor.id}>`);
+    
+    const contentMencoes = mencoes.length > 0 
+      ? `📢 Envolvidos: ${mencoes.join(" ")}` 
+      : null;
+
+    await interaction.reply({ 
+      content: contentMencoes,
+      embeds: [embed] 
+    });
   }
 });
 

@@ -34,15 +34,15 @@ const commands = [
   },
 
   // ============================
-  // RELATORIO (mantido igual)
+  // RELATORIO
   // ============================
   {
     name: "relatorio",
     description: "Cria um relatório de missão",
     options: [
       { name: "missao", description: "Nome da missão", type: ApplicationCommandOptionType.String, required: true },
-      { name: "mestre", description: "Nome do mestre", type: ApplicationCommandOptionType.String, required: true },
-      { name: "escritor", description: "Quem escreveu o relatório", type: ApplicationCommandOptionType.String, required: true },
+      { name: "mestre", description: "Mestre da missão (@)", type: ApplicationCommandOptionType.User, required: true },
+      { name: "escritor", description: "Quem escreveu o relatório (@)", type: ApplicationCommandOptionType.User, required: true },
       { name: "relatorio", description: "Texto do relatório", type: ApplicationCommandOptionType.String, required: true },
 
       // Opcionais
